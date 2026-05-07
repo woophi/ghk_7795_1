@@ -18,11 +18,17 @@ const container = style({
 const boxWrap = style({
   padding: '12px 0',
   backgroundColor: '#F2F3F5',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1rem',
 });
 const box = style({
   padding: '20px',
   borderRadius: '12px',
   backgroundColor: '#FFFFFF',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1rem',
 });
 
 const row = style({
@@ -31,10 +37,15 @@ const row = style({
   justifyContent: 'space-between',
 });
 
+const btmContent = style({
+  padding: 0,
+});
+
 export const appSt = {
   bottomBtn,
   container,
   box,
   row,
   boxWrap,
+  btmContent,
 };

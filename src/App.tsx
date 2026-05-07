@@ -1,20 +1,178 @@
+import { BottomSheet } from '@alfalab/core-components/bottom-sheet/cssm';
 import { Button } from '@alfalab/core-components/button/cssm';
 import { Gap } from '@alfalab/core-components/gap/cssm';
+import { PureCell } from '@alfalab/core-components/pure-cell/cssm';
 import { Tag } from '@alfalab/core-components/tag/cssm';
 import { Typography } from '@alfalab/core-components/typography/cssm';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import checkImg from './assets/check.png';
+import polisImg from './assets/polis.png';
 import { LS, LSKeys } from './ls';
 import { appSt } from './style.css';
 
+const items = [
+  {
+    title: 'Гарантированный доход',
+    subtitle: 'Размер дохода фиксирован и гарантирован условиями договора',
+  },
+  {
+    title: 'Защита капитала',
+    subtitle: 'Гарантированный доход и взносы выплачиваются в полном объеме в конце срока действия договора',
+  },
+  {
+    title: 'Преимущества программы',
+    subtitle: 'Страховое покрытие, юридическая защита и адресная передача капитала',
+  },
+];
+
 export const App = () => {
   const [view, setView] = useState<'init' | 'conditions'>('init');
+  const [openBs, setOpenBs] = useState(false);
+  const [bsContent, setBsContent] = useState<'about' | 'details'>('about');
+  const pageOpenAtRef = useRef(Date.now());
+
   useEffect(() => {
     if (!LS.getItem(LSKeys.UserId, null)) {
       LS.setItem(LSKeys.UserId, Date.now());
     }
+    window.gtag('event', '7795_landing_impression', { var: 'var1' });
   }, []);
 
-  const submit = () => {};
+  const submit = () => {
+    const timeOnPage = Math.floor((Date.now() - pageOpenAtRef.current) / 1000).toString();
+
+    window.gtag('event', '7795_buy_click', { var: 'var1', size: '30000', time_on_page: timeOnPage });
+    window.location.replace(
+      'alfabank://multistep-route?fromModule=SIGN_ONLINE&stepNumber=0&alias=invest-partners-order-alias&version=2&productId=202987',
+    );
+  };
+
+  const bsContentView = useMemo(() => {
+    switch (bsContent) {
+      case 'about':
+        return (
+          <>
+            <Typography.Title tag="h3" view="xsmall" weight="semibold">
+              Fort Knox, 1 год
+            </Typography.Title>
+            <Typography.Text view="primary-medium">
+              Инвестиции с гарантированным доходом 13,25% годовых и страховой составляющей
+            </Typography.Text>
+            <Gap size={1} />
+            <Typography.Title tag="h3" view="xsmall" weight="semibold">
+              Преимущества
+            </Typography.Title>
+            <Typography.Text view="primary-medium">
+              • Инвестиционное решение в оболочке страхового полиса от финансовых экспертов
+              <br />
+              • Гарантированный доход в конце срока
+              <br />
+              • Юридическая защита капитала от любых притязаний
+              <br />
+              • Адресная передача средств
+              <br />• Выплаты близким в страховых случаях
+            </Typography.Text>
+            <Gap size={1} />
+            <Typography.Title tag="h3" view="xsmall" weight="semibold">
+              Как это работает
+            </Typography.Title>
+            <Typography.Text view="primary-medium">
+              • Вы размещаете денежные средства на установленный в договоре срок.
+              <br />
+              • Размер дохода фиксирован и гарантирован.
+              <br />• В конце программы вы получаете всю внесенную сумму и гарантированный доход.
+            </Typography.Text>
+            <Gap size={1} />
+            <Typography.Title tag="h3" view="xsmall" weight="semibold">
+              Специальное предложение — Альфа-Вклад Актив
+            </Typography.Title>
+            <Typography.Text view="primary-medium">
+              В течение недели после оформления программы Fort Knox вы можете открыть вклад на 2, 3 или 6 месяцев с
+              повышенной ставкой в мобильном приложении Альфа-Банка.
+            </Typography.Text>
+            <Gap size={1} />
+            <Typography.Title tag="h3" view="xsmall" weight="semibold">
+              Как открыть Альфа-Вклад Актив
+            </Typography.Title>
+            <Typography.Text view="primary-medium">
+              • Откройте программу Fort Knox
+              <br />
+              • Альфа-Вклад Актив доступен для открытия в течение 7 дней после взноса. Сумма вклада не превышает сумму взноса
+              по Fort Knox
+              <br />• По вкладу сразу будет установлена повышенная ставка
+            </Typography.Text>
+            <Typography.Text view="primary-medium">
+              Предложение действительно ограниченное время. Если вы уже оформляли договор страхования ранее — актуальные
+              параметры ищите в вашем Договоре страхования.
+            </Typography.Text>
+          </>
+        );
+      case 'details':
+        return (
+          <>
+            <div>
+              <Typography.Text view="primary-small" color="secondary" tag="p" defaultMargins={false}>
+                Взнос
+              </Typography.Text>
+              <Typography.Text view="primary-medium" tag="p" defaultMargins={false}>
+                от 30 000 ₽
+              </Typography.Text>
+            </div>
+            <Gap size={1} />
+
+            <div>
+              <Typography.Text view="primary-small" color="secondary" tag="p" defaultMargins={false}>
+                Срок программы
+              </Typography.Text>
+              <Typography.Text view="primary-medium" tag="p" defaultMargins={false}>
+                12 месяцев
+              </Typography.Text>
+            </div>
+            <Gap size={1} />
+
+            <div>
+              <Typography.Text view="primary-small" color="secondary" tag="p" defaultMargins={false}>
+                Риск
+              </Typography.Text>
+              <Typography.Text view="primary-medium" tag="p" defaultMargins={false}>
+                Ультра-консервативный
+              </Typography.Text>
+            </div>
+            <Gap size={1} />
+
+            <div>
+              <Typography.Text view="primary-small" color="secondary" tag="p" defaultMargins={false}>
+                Размер купона
+              </Typography.Text>
+              <Typography.Text view="primary-medium" tag="p" defaultMargins={false}>
+                13,25% за 12 месяцев
+              </Typography.Text>
+            </div>
+            <Gap size={1} />
+
+            <div>
+              <Typography.Text view="primary-small" color="secondary" tag="p" defaultMargins={false}>
+                Выплаты купона
+              </Typography.Text>
+              <Typography.Text view="primary-medium" tag="p" defaultMargins={false}>
+                В конце срока
+              </Typography.Text>
+            </div>
+            <Gap size={1} />
+
+            <div>
+              <Typography.Text view="primary-small" color="secondary" tag="p" defaultMargins={false}>
+                Защита капитала
+              </Typography.Text>
+              <Typography.Text view="primary-medium" tag="p" defaultMargins={false}>
+                Полная
+              </Typography.Text>
+            </div>
+          </>
+        );
+    }
+  }, [bsContent]);
+
   return (
     <>
       <div className={appSt.container}>
@@ -36,27 +194,156 @@ export const App = () => {
             size={40}
             shape="rounded"
             checked={view === 'conditions'}
-            onClick={() => setView('conditions')}
+            onClick={() => {
+              window.gtag('event', '7795_conditions_click', { var: 'var1' });
+              setView('conditions');
+            }}
           >
             Условия
           </Tag>
         </div>
 
-        <div className={appSt.boxWrap}>
-          <div className={appSt.box}>
-            <Typography.TitleResponsive tag="h2" view="small" weight="semibold">
-              О полисе
-            </Typography.TitleResponsive>
+        {view === 'init' ? (
+          <div className={appSt.boxWrap}>
+            <div className={appSt.box}>
+              <Typography.TitleResponsive tag="h2" view="small" weight="semibold">
+                О полисе
+              </Typography.TitleResponsive>
+
+              <PureCell>
+                <PureCell.Graphics verticalAlign="center">
+                  <img src={polisImg} width={48} height={48} alt="polis" />
+                </PureCell.Graphics>
+                <PureCell.Content>
+                  <PureCell.Main>
+                    <Typography.Text view="primary-medium" tag="p" defaultMargins={false}>
+                      Fort Knox, 1 год
+                    </Typography.Text>
+                  </PureCell.Main>
+                </PureCell.Content>
+              </PureCell>
+              <Typography.Text view="primary-medium" tag="p" defaultMargins={false}>
+                Инвестиции с гарантированным доходом 13,25% годовых и страховой составляющей&nbsp;…
+              </Typography.Text>
+
+              <Button
+                view="secondary"
+                block
+                size={40}
+                onClick={() => {
+                  window.gtag('event', '7795_insurance_about_click', { var: 'var1' });
+
+                  setOpenBs(true);
+                  setBsContent('about');
+                }}
+              >
+                Подробнее
+              </Button>
+            </div>
+            <div className={appSt.box}>
+              <Typography.TitleResponsive tag="h2" view="small" weight="semibold">
+                Основное
+              </Typography.TitleResponsive>
+
+              <div>
+                <Typography.Text view="primary-small" color="secondary" tag="p" defaultMargins={false}>
+                  Взнос
+                </Typography.Text>
+                <Typography.Text view="primary-medium" tag="p" defaultMargins={false}>
+                  от 30 000 ₽
+                </Typography.Text>
+              </div>
+              <div>
+                <Typography.Text view="primary-small" color="secondary" tag="p" defaultMargins={false}>
+                  Выплаты купона
+                </Typography.Text>
+                <Typography.Text view="primary-medium" tag="p" defaultMargins={false}>
+                  В конце срока
+                </Typography.Text>
+              </div>
+
+              <Button
+                view="secondary"
+                block
+                size={40}
+                onClick={() => {
+                  window.gtag('event', '7795_main_about_click', { var: 'var1' });
+
+                  setOpenBs(true);
+                  setBsContent('details');
+                }}
+              >
+                Подробнее
+              </Button>
+            </div>
+            <div className={appSt.box}>
+              <Typography.TitleResponsive tag="h2" view="small" weight="semibold">
+                Почему стоит инвестировать
+              </Typography.TitleResponsive>
+
+              {items.map((item, index) => (
+                <PureCell key={index}>
+                  <PureCell.Graphics verticalAlign="center">
+                    <img src={checkImg} width={48} height={48} alt="check" />
+                  </PureCell.Graphics>
+                  <PureCell.Content>
+                    <PureCell.Main>
+                      <Typography.Text view="primary-medium" tag="p" defaultMargins={false}>
+                        {item.title}
+                      </Typography.Text>
+                      <Typography.Text view="primary-small" color="secondary" tag="p" defaultMargins={false}>
+                        {item.subtitle}
+                      </Typography.Text>
+                    </PureCell.Main>
+                  </PureCell.Content>
+                </PureCell>
+              ))}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className={appSt.box}>
+            <Typography.Title tag="h2" view="small" weight="semibold">
+              Характеристики
+            </Typography.Title>
+            <div>
+              <Typography.Text view="primary-small" color="secondary" tag="p" defaultMargins={false}>
+                Валюта
+              </Typography.Text>
+              <Typography.Text view="primary-medium" tag="p" defaultMargins={false}>
+                Рубли
+              </Typography.Text>
+            </div>
+            <div>
+              <Typography.Text view="primary-small" color="secondary" tag="p" defaultMargins={false}>
+                Риск
+              </Typography.Text>
+              <Typography.Text view="primary-medium" tag="p" defaultMargins={false}>
+                Умеренный
+              </Typography.Text>
+            </div>
+          </div>
+        )}
       </div>
       <Gap size={96} />
 
       <div className={appSt.bottomBtn}>
         <Button block view="primary" onClick={submit}>
-          Создать шаблон оплаты
+          Купить
         </Button>
       </div>
+
+      <BottomSheet
+        open={openBs}
+        onClose={() => {
+          setOpenBs(false);
+        }}
+        hasCloser
+        title={bsContent === 'about' ? 'О полисе' : 'Основное'}
+        titleAlign="left"
+        stickyHeader
+      >
+        <div className={appSt.container}>{bsContentView}</div>
+      </BottomSheet>
     </>
   );
 };
